@@ -8,6 +8,20 @@ const App = () => {
 
     const addContact = (event) => {
         event.preventDefault();
+
+        //this code is in case empty names were invalid
+        /*if(newName === '')
+        {
+            alert('please, introduce a name')
+            return
+        }*/
+
+        if(persons.some((contact)=>contact.name===newName))
+        {
+            alert(`${newName} is already added to phonebook`)
+            return
+        }
+
         setPersons(persons.concat({name: newName}))
         setNewName('')
     }
