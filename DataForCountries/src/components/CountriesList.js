@@ -5,8 +5,6 @@ import CountryDetails from './CountryDetails'
 const CountriesList = ({ countries, ...props }) => {
 
     if (countries.length === 1) {
-
-        console.log('countries', countries)
         return (
             <div>
                 <CountryDetails country={countries[0]}/>
@@ -16,7 +14,7 @@ const CountriesList = ({ countries, ...props }) => {
     else {
         return (
             <div>
-                {countries.map((country) => <Country key={country.numericCode} country={country} />)}
+                {countries.map((country) => <Country key={country.numericCode} country={country} changeFilterFunction={props.changeFilterFunction}/>)}
             </div>
         )
     }
