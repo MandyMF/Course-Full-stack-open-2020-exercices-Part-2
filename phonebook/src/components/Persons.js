@@ -4,7 +4,7 @@ import Person from './Person'
 const Persons = ({persons, filter, ...props}) =>{
     return (
         <>
-             {persons.filter((person) => person.name.toUpperCase().startsWith(filter.toUpperCase())).map((person) => <Person key={person.name} name={person.name} number={person.number}/> )}
+             {persons.filter((person) => person.name.toUpperCase().startsWith(filter.toUpperCase())).map((person) => <Person key={person.id} name={person.name} number={person.number}/> )}
         </>
     )
 }
