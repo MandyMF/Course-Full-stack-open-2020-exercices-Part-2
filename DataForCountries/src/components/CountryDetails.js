@@ -1,4 +1,5 @@
 import React from 'react'
+import Wheather from './Wheather'
 
 
 const CountryDetails = ({ country, ...props }) => {
@@ -12,6 +13,8 @@ const CountryDetails = ({ country, ...props }) => {
                 {country.languages.map((lang, idx)=><li key={idx}> {lang.name} </li>)}
             </ul>
             <img alt="Can not show flag" src={country.flag} width={200} />
+
+            <Wheather country={country}/>
         </div>
     )
 
