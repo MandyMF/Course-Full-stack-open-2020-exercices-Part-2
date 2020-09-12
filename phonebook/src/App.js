@@ -6,7 +6,7 @@ import Notification from './components/Notification'
 
 import personService from './services/persons'
 
-import './index.css'
+//import './index.css'
 
 const App = () => {
     const [persons, setPersons] = useState([])
@@ -15,6 +15,7 @@ const App = () => {
 
     const [filter, setFilter] = useState('')
 
+    //message structure {success:true, info:null}
     const [message, setMessage] = useState(null)
 
     useEffect(() => {
@@ -46,9 +47,8 @@ const App = () => {
                         setNewName('')
                         setNewNumber('')
 
-                        setMessage(`Number of ${response.name} changed to ${newNumber}`)
-                        setTimeout(()=>setMessage(''),5000)
-
+                        setMessage({success:true, info:`Number of ${response.name} changed to ${newNumber}`})
+                        setTimeout(() => setMessage(null), 5000)
 
                     })
             }
@@ -61,21 +61,26 @@ const App = () => {
                 setNewName('')
                 setNewNumber('')
 
-                setMessage(`Added ${response.name}`)
-                setTimeout(()=>setMessage(''), 5000)
+                setMessage({success:true, info:`Added ${response.name}`})
+                setTimeout(() => setMessage(null), 5000)
             })
 
     }
 
     const deleteContact = (personId, personName) => {
         if (window.confirm(`Delete ${personName} ?`)) {
-            personService.deletePerson(personId).then( ()=>{
-            setPersons(persons.filter((person) => person.id !== personId))
+            personService.deletePerson(personId).then(() => {
+                setPersons(persons.filter((person) => person.id !== personId))
 
-            setMessage(`Deleted ${personName}`)
-            setTimeout(()=>setMessage(''), 5000)
+                setMessage({success:true, info:`Deleted ${personName}`})
+                setTimeout(() => setMessage(null), 5000)
             }
-            )
+            ).catch(error => {
+                setPersons(persons.filter((person) => person.id !== personId))
+
+                setMessage({success:false, info:`Information of ${personName} has already been removed from the server`})
+                setTimeout(() => setMessage(null), 5000)
+            })
         }
     }
 
