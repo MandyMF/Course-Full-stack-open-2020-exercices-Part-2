@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
-import axios from 'axios'
+import personService from './services/persons'
 
 const App = () => {
     const [persons, setPersons] = useState([])
@@ -12,10 +12,9 @@ const App = () => {
     const [filter, setFilter] = useState('')
 
     useEffect(() => {
-        axios
-            .get('http://localhost:3001/persons')
+        personService.getAll()
             .then((response) => {
-                setPersons(response.data)
+                setPersons(response)
             }
             )
     }, [])
@@ -35,13 +34,21 @@ const App = () => {
             return
         }
 
-        axios.post('http://localhost:3001/persons',{name:newName, number:newNumber})
+        personService.createPerson({name:newName, number:newNumber})
         .then(response => {
-            setPersons(persons.concat(response.data)) 
+            setPersons(persons.concat(response)) 
             setNewName('')
             setNewNumber('')
         })
 
+    }
+
+    const deleteContact=( personId, personName )=>{
+        if(window.confirm(`Delete ${personName} ?`))
+        {
+            personService.deletePerson(personId)
+            setPersons(persons.filter((person)=> person.id !== personId ))
+        }
     }
 
     const handleNewNameChange = (event) => {
@@ -75,6 +82,7 @@ const App = () => {
             <h3>Numbers</h3>
 
             <Persons
+                handlerDeletePerson={deleteContact}
                 persons={persons}
                 filter={filter}
             />
