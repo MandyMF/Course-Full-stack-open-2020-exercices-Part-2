@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
+import Notification from './components/Notification'
+
 import personService from './services/persons'
+
+import './index.css'
 
 const App = () => {
     const [persons, setPersons] = useState([])
@@ -10,6 +14,8 @@ const App = () => {
     const [newNumber, setNewNumber] = useState('')
 
     const [filter, setFilter] = useState('')
+
+    const [message, setMessage] = useState(null)
 
     useEffect(() => {
         personService.getAll()
@@ -37,6 +43,13 @@ const App = () => {
                 personService.updatePerson(person_found.id, changePerson)
                     .then(response => {
                         setPersons(persons.map((person) => person.id !== response.id ? person : response))
+                        setNewName('')
+                        setNewNumber('')
+
+                        setMessage(`Number of ${response.name} changed to ${newNumber}`)
+                        setTimeout(()=>setMessage(''),5000)
+
+
                     })
             }
             return
@@ -47,14 +60,22 @@ const App = () => {
                 setPersons(persons.concat(response))
                 setNewName('')
                 setNewNumber('')
+
+                setMessage(`Added ${response.name}`)
+                setTimeout(()=>setMessage(''), 5000)
             })
 
     }
 
     const deleteContact = (personId, personName) => {
         if (window.confirm(`Delete ${personName} ?`)) {
-            personService.deletePerson(personId)
+            personService.deletePerson(personId).then( ()=>{
             setPersons(persons.filter((person) => person.id !== personId))
+
+            setMessage(`Deleted ${personName}`)
+            setTimeout(()=>setMessage(''), 5000)
+            }
+            )
         }
     }
 
@@ -73,6 +94,8 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
+
+            <Notification message={message} />
 
             <Filter filter={filter} handleFilterChange={handleFilterChange} />
 
