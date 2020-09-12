@@ -29,25 +29,32 @@ const App = () => {
             return
         }*/
 
-        if (persons.some((contact) => contact.name === newName)) {
-            alert(`${newName} is already added to phonebook`)
+        const person_found = persons.find((contact) => contact.name === newName)
+
+        if (person_found) {
+            if (window.confirm(`${newName} is already added to phonebook, replace the old number with the new one?`)) {
+                const changePerson = { ...person_found, number: newNumber }
+                personService.updatePerson(person_found.id, changePerson)
+                    .then(response => {
+                        setPersons(persons.map((person) => person.id !== response.id ? person : response))
+                    })
+            }
             return
         }
 
-        personService.createPerson({name:newName, number:newNumber})
-        .then(response => {
-            setPersons(persons.concat(response)) 
-            setNewName('')
-            setNewNumber('')
-        })
+        personService.createPerson({ name: newName, number: newNumber })
+            .then(response => {
+                setPersons(persons.concat(response))
+                setNewName('')
+                setNewNumber('')
+            })
 
     }
 
-    const deleteContact=( personId, personName )=>{
-        if(window.confirm(`Delete ${personName} ?`))
-        {
+    const deleteContact = (personId, personName) => {
+        if (window.confirm(`Delete ${personName} ?`)) {
             personService.deletePerson(personId)
-            setPersons(persons.filter((person)=> person.id !== personId ))
+            setPersons(persons.filter((person) => person.id !== personId))
         }
     }
 
